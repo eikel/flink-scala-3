@@ -13,7 +13,10 @@ import org.apache.flink.configuration.Configuration
 import org.apache.flink.connector.kafka.source.KafkaSource
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment
-import org.apache.flink.streaming.api.functions.co.KeyedCoProcessFunction
+import org.apache.flink.streaming.api.functions.co.{
+  KeyedBroadcastProcessFunction,
+  KeyedCoProcessFunction
+}
 import org.apache.flink.util.Collector
 import scala.jdk.CollectionConverters._
 
@@ -58,6 +61,25 @@ import scala.jdk.CollectionConverters._
     .process(new JoinCustomersWithTransaction)
     .executeAndCollect
     .forEachRemaining(println)
+
+class MyFunction
+    extends KeyedBroadcastProcessFunction[Int, Long, String, Double]:
+  override def processBroadcastElement(
+      value: String,
+      ctx: KeyedBroadcastProcessFunction[Int, Long, String, Double]#Context,
+      out: Collector[Double]
+  ): Unit = ???
+
+  override def processElement(
+      value: Long,
+      ctx: KeyedBroadcastProcessFunction[
+        Int,
+        Long,
+        String,
+        Double
+      ]#ReadOnlyContext,
+      out: Collector[Double]
+  ): Unit = ???
 
 class JoinCustomersWithTransactionCopy
     extends KeyedCoProcessFunction[Long, Customer, Transaction, String]:
