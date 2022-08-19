@@ -2,7 +2,7 @@ name := "flink-scala-3"
 
 version := "0.1"
 
-scalaVersion := "3.1.0"
+scalaVersion := "3.1.3"
 
 resolvers += Resolver.mavenLocal
 
